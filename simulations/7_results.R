@@ -17,7 +17,6 @@ file = paste0(wd, "/", "0_functions.R")
 source(file)
 
 
-
 "_____________________Formatting Data_____________________"
 
 #----Load data----
@@ -38,22 +37,12 @@ df <- df0 %>%
 
 
 #----Failures----
-# p2bar_fail <- df %>%
-#   filter(EN > 3000) %>%
-#   group_by(i, geom, design, density, coverage) %>%
-#   summarise(mean_n_fails = n()/300) %>% # ASSUMING NSIM = 300 AND ds ISSUE ONLY
-#   ungroup() %>%
-#   select(i, geom, design, density, coverage, mean_n_fails)
-
 fail_df <- df %>%
   filter(oSCR_model != "ds") %>%
   select(i, geom, design, density, coverage, failures) %>%
   group_by(i, geom, design, density, coverage) %>%
   summarise(mean_n_fails = mean(failures)) %>%
   filter(mean_n_fails > 0)
-
-# rbind(as.data.frame(fail_df), as.data.frame(p2bar_fail)) %>%
-#   mutate_if(is.numeric, round, 4)
 
 
 #----Go long!----
@@ -87,10 +76,6 @@ d.sum <- df %>%
   mutate_if(is.numeric, round, 2) %>%
   arrange(i)
 
-# Merge failures here
-# write.csv(d.sum, file = paste0(wd, "/", "summary_table.csv"))
-
-
 
 "_____________________Evaluations_____________________"
 
@@ -112,4 +97,3 @@ evals <- out %>%
   select(i, everything()) %>%
   arrange(i) %>%
   as.data.frame()
-
