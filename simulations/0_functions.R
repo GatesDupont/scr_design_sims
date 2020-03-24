@@ -232,10 +232,6 @@ calc_srmse = function(estimates, parameter){
 
 "SIMULATOR"
 
-# for the Poisson model this is approximately exp(beta0) = 0.2*3
-# Simulator function needs modified to allow for the Poisson model.
-# SCRdesign ONLY does the Poisson model.
-
 #----SIMULATOR----
 #Create a simulator function
 simulator<- function(traps, ss, N, p0, sigma, K, nsim, it = 1,
