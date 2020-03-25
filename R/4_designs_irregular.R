@@ -28,7 +28,7 @@ library(kofnGA)
 source("R/0_functions.R")
 
 # Working directory
-wd = getwd()
+wd = "~/scr_design_sims"
 
 
 #----Load data----
