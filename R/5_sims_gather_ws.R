@@ -6,7 +6,7 @@ library(stringr)
 
 source("R/0_functions.R")
 
-wd = getwd()
+wd = "~/scr_design_sims"
 
 "LOADING DATA"
 
