@@ -2,6 +2,7 @@
 
 # Parallel
 ncores = 19 # To parallelize design finding
+            # could also use detectCores() - 1
 
 # GA
 ngen = 1500   # This should be >1500 for smooth designs
@@ -13,10 +14,9 @@ p0 = 0.2
 K = 5
 # sig: see line 41
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # #
 # Gates Dupont      #
 # gdupont@umass.edu #
-# November 2019     #
 # # # # # # # # # # # 
 
 library(oSCR)
@@ -85,19 +85,6 @@ designA.p2bar.GA =
 stopCluster(cl)
 designA.p2bar = designA.p2bar.GA$optimaltraps
 
-# pcombo
-cl = makeCluster(ncores)
-clusterExport(cl, varlist = c("e2dist"), envir = environment())
-designA.pcombo.GA =
-  scrdesignGA(
-    statespace = SS, alltraps = TT, ntraps = ntrapsA, # Study area
-    sigma = sig, beta0 = log(p0*K), crit = 3, # SCR parameters
-    popsize = popsize, keepbest = keepbest, ngen = ngen, # GA parameters
-    cluster = cl
-  )
-stopCluster(cl)
-designA.pcombo = designA.pcombo.GA$optimaltraps
-
 
 "B"
 
@@ -126,19 +113,6 @@ designB.p2bar.GA =
   )
 stopCluster(cl)
 designB.p2bar = designB.p2bar.GA$optimaltraps
-
-# pcombo
-cl = makeCluster(ncores)
-clusterExport(cl, varlist = c("e2dist"), envir = environment())
-designB.pcombo.GA =
-  scrdesignGA(
-    statespace = SS, alltraps = TT, ntraps = ntrapsB, # Study area
-    sigma = sig, beta0 = log(p0*K), crit = 3, # SCR parameters
-    popsize = popsize, keepbest = keepbest, ngen = ngen, # GA parameters
-    cluster = cl
-  )
-stopCluster(cl)
-designB.pcombo = designB.pcombo.GA$optimaltraps
 
 
 "C"
@@ -169,34 +143,21 @@ designC.p2bar.GA =
 stopCluster(cl)
 designC.p2bar = designC.p2bar.GA$optimaltraps
 
-# pcombo
-cl = makeCluster(ncores)
-clusterExport(cl, varlist = c("e2dist"), envir = environment())
-designC.pcombo.GA =
-  scrdesignGA(
-    statespace = SS, alltraps = TT, ntraps = ntrapsC, # Study area
-    sigma = sig, beta0 = log(p0*K), crit = 3, # SCR parameters
-    popsize = popsize, keepbest = keepbest, ngen = ngen, # GA parameters
-    cluster = cl
-  )
-stopCluster(cl)
-designC.pcombo = designC.pcombo.GA$optimaltraps
-
 
 #----Write out the files----
 designs = list(designA.pbar, designA.p2bar, designA.pcombo,
                designB.pbar, designB.p2bar, designB.pcombo,
                designC.pbar, designC.p2bar, designC.pcombo)
 
-filename_ntraps = rep(c("designA_", "designB_", "designC_"), each = 3)
-filename_design = rep(c("pbar_", "p2bar_", "pcombo_"), 3)
+filename_ntraps = rep(c("designA_", "designB_", "designC_"), each = 2)
+filename_design = rep(c("pbar_", "p2bar_"), 3)
 
 dir = paste0(wd, "/designs")
 if(!dir.exists(dir)){
   dir.create(dir)
 }
 
-for (i in 1:9) {
+for (i in 1:6) {
   file = paste0(dir, "/", filename_ntraps[i], filename_design[i], "_irregular.csv")
   write.csv(designs[[i]], file, row.names = FALSE)
 }
