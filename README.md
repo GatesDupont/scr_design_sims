@@ -14,4 +14,4 @@ The help file for `scrdesignGA` can be accessed through the package, using: `?sc
 
 Simulations were completed using R version 3.6.1.
 
-1. Sutherland, C., Royle, J. A., and Linden, D. W. (2019). oSCR: a spatial capture–recapture R405package for inference about spatial ecological processes.Ecography, 42(9):1459–1469.
+1. Sutherland, C., Royle, J. A., and Linden, D. W. (2019). oSCR: a spatial capture–recapture R405package for inference about spatial ecological processes. *Ecography*, 42(9):1459–1469.
