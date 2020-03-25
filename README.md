@@ -1,5 +1,5 @@
 # Simulation code
-### From: "Towards optimal sampling design for spatial capture-recapture"
+### From: *"Towards optimal sampling design for spatial capture-recapture"*
 
 
 This repository contains the code to generate and evaluate SCR sampling designs that were generated using the framework presented in the abovementioned manudscript. The R code, found in the R subdirectory, operates within the file structure of this repository. Simulations are performed in the `6_sims.r` file, which pulls other files from the directory that are conveniently compiled into the R data file: `workspace/sims_ws.RData`. The simulations file is currently parameterized to run all simulations simultaneously, and for sake of efficiency, the simulations are distributed across several cores.
