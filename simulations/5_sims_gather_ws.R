@@ -1,6 +1,5 @@
 # Gates Dupont      #
 # gdupont@umass.edu #
-# December 2019     #
 # # # # # # # # # # # 
 
 library(stringr)
