@@ -22,10 +22,9 @@ if(!dir.exists(plots.out.dir)){
 }
 
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # #
 # Gates Dupont      #
 # gdupont@umass.edu #
-# December 2019     #
 # # # # # # # # # # # 
 
 library(oSCR)
