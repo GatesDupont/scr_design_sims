@@ -1,6 +1,5 @@
 # Gates Dupont      #
 # gdupont@umass.edu #
-# November 2019     #
 # # # # # # # # # # # 
 
 library(dplyr)
@@ -8,6 +7,7 @@ library(NLMR)
 library(raster)
 library(viridis)
 source("R/0_functions.R")
+# Resolve namespace conflicts
 select = dplyr::select
 wd = getwd()
 
