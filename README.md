@@ -12,7 +12,7 @@ remotes::install_github("jaroyle/oSCR")
 
 The help file for `scrdesignGA` can be accessed through the package, using: `?scrdesignGA`, and is also available [online](https://rdrr.io/github/jaroyle/oSCR/man/scrdesignGA.html). Included in the help file is an example of how to generate designs from the Astore region of Pakistan, which was used here.
 
-Simulations were completed using R version 3.6.1(R Core Team, 2019).
+Simulations were completed using R version 3.6.1 (R Core Team, 2019).
 
 1. Sutherland, C., Royle, J. A., and Linden, D. W. (2019). oSCR: a spatial capture–recapture R package for inference about spatial ecological processes. *Ecography*, 42(9):1459–1469.
 
