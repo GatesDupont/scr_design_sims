@@ -1,4 +1,4 @@
-wd = "~/Desktop/sims"
+wd = "~/scr_design_sims"
 
 # # # # # # # # # # #
 # Gates Dupont      #
