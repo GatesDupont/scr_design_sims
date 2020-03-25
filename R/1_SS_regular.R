@@ -9,7 +9,7 @@ library(viridis)
 source("R/0_functions.R")
 # Resolve namespace conflicts
 select = dplyr::select
-wd = getwd()
+wd = "~/scr_design_sims"
 
 #----Primary parameter----
 
