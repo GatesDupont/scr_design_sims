@@ -1,8 +1,8 @@
 wd = "~/Desktop/sims"
 
+# # # # # # # # # # #
 # Gates Dupont      #
 # gdupont@umass.edu #
-# March 2020       #
 # # # # # # # # # # # 
 
 library(Hmisc)
