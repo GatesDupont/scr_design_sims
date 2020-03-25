@@ -174,7 +174,7 @@ if(!dir.exists(dir)){
   dir.create(dir)
 }
 
-for (i in 1:12) {
+for (i in 1:9) {
   file = paste0(dir, "/", filename_ntraps[i], filename_design[i], "_regular.csv")
   write.csv(designs[[i]], file, row.names = FALSE)
 }
