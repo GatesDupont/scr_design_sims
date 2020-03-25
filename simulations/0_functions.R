@@ -1,6 +1,5 @@
 # Gates Dupont      #
 # gdupont@umass.edu #
-# December 2019     #
 # # # # # # # # # # # 
 
 require(oSCR)
@@ -10,7 +9,7 @@ require(raster)
 require(viridis)
 require(stringr)
 require(landscapetools)
-
+# Resolve namespace conflicts
 select = dplyr::select
 
 "RIGHT"
@@ -18,76 +17,13 @@ right = function(text, num_char) {
   substr(text, nchar(text) - (num_char-1), nchar(text))
 }
 
-"COUNT SP RECAPS"
-n.spatial.recaps = function(y){
-  
-  # Array with slot for individuals
-  y2 = array(0, dim = dim(y)[1])
-  
-  # For each individual
-  for(i in 1:dim(y)[1]){
-    
-    # Grab individual
-    ind = y[i,,] 
-    
-    # Get all their traps
-    ind.tt = which(ind !=0, arr.ind = T)[,1] 
-    
-    # Absolute value of differences in cameras (numeric)
-    ind.tt.sw = abs(diff(ind.tt))
-    
-    # Convert to binary: change/no_change
-    ind.tt.sw[ind.tt.sw > 0] = 1
-    
-    # Tally the number of changes aka spatial recaps
-    sp.r = sum(ind.tt.sw)
-    
-    # Assign n sp rc to the individual
-    y2[i] = sp.r
-    
-  }
-  
-  result = list()
-  result[[1]] = y2 # sprc per individual
-  result[[2]] = sum(y2) # total sprc
-  
-  return(result)
-}
 
-
-"SIMPLE SS PLOT"
+"SIMPLE STATESPACE PLOT"
 # Plot to check designs
 plot_design = function(SS, TT, design){
   plot(SS, asp=1, col="gray80", cex=0.2)
   points(TT, pch=20, col="orange", cex=2)
   points(design, pch=20, col="blue", cex=2.5)
-}
-
-
-"PLANAR GRADIENT"
-
-# Fixed version of nlm_planargradient
-r.nlm_planargradient = function (ncol, nrow, resolution = 1, direction = NA, rescale = TRUE) 
-{
-  checkmate::assert_count(ncol, positive = TRUE)
-  checkmate::assert_count(nrow, positive = TRUE)
-  checkmate::assert_numeric(direction)
-  checkmate::assert_logical(rescale)
-  if (is.na(direction)) {
-    direction <- stats::runif(1, 0, 360)
-  }
-  eastness <- sin((pi/180) * direction)
-  southness <- cos((pi/180) * direction) * -1
-  col_index <- matrix(0:(ncol - 1), nrow, ncol, byrow = TRUE)
-  row_index <- matrix(0:(nrow - 1), nrow, ncol, byrow = FALSE)
-  gradient_matrix <- (southness * row_index + eastness * col_index)
-  gradient_raster <- raster::raster(gradient_matrix)
-  raster::extent(gradient_raster) <- c(0, ncol(gradient_raster) * 
-                                         resolution, 0, nrow(gradient_raster) * resolution)
-  if (rescale == TRUE) {
-    gradient_raster <- util_rescale(gradient_raster)
-  }
-  return(gradient_raster)
 }
 
 
@@ -257,7 +193,7 @@ simulator<- function(traps, ss, N, p0, sigma, K, nsim, it = 1,
   sim_try = 0
   total_its = 0
   
-  # Get nsim "good" simulations
+  # Get nsim simulations with spatial recaps
   while(sim < (nsim + 1)){
     
     # Update loop
@@ -306,7 +242,7 @@ simulator<- function(traps, ss, N, p0, sigma, K, nsim, it = 1,
     y.all = y                        # for summary stats
     y <- y[ncap>0,,]                 # reduce the y array to include only captured individuals
     
-    # Some summary information, that is actually printed for you later with "print(scrFrame)"
+    # Some summary information. (printed later with "print(scrFrame)")
     caps.per.ind.trap <- apply(y,c(1,2),sum) #shows # capts for each indv across all traps
     
     # Check for captures
@@ -316,7 +252,7 @@ simulator<- function(traps, ss, N, p0, sigma, K, nsim, it = 1,
     # Check for spatial recaps
     check.sp_recaps = as.matrix((caps.per.ind.trap > 0) + 0) %>%
       rowSums() %>%
-      c(.,-1) %>% # This is just to avoid warning messages due to empty lists
+      c(.,-1) %>% # avoid warning messages due to empty lists
       max %>%
       if(. > 1){return(TRUE)} else {return(FALSE)}
     
@@ -383,7 +319,7 @@ simulator<- function(traps, ss, N, p0, sigma, K, nsim, it = 1,
       avg.nlocs = mean(ntraps.per.capInd)               # avg of the number of unique locations per individual
       avg.nspatcaps = mean(ntraps.per.capInd - 1)       # avg of the number of spatial captures per individual
       
-      # Finally summary stats object
+      # Final summary stats object
       SCR_summary_stats = list(nind.c, nind.r, r_s, avg.dets, avg.r, avg.nlocs, avg.nspatcaps)
       names(SCR_summary_stats) = c("nind.c", "nind.r", "r_s", "avg.dets", "avg.r", "avg.nlocs", "avg.nspatcaps")
       
