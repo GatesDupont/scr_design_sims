@@ -2,7 +2,7 @@
 
 ncores = 18
 nsim = 300 # This should be 300
-wd = getwd()
+wd = "~/scr_design_sims"
 output.dir = "output"
 it.out.dir = "it_out"
 plots.out.dir = "output/sim_plots"
