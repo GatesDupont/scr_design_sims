@@ -1,3 +1,4 @@
+# # # # # # # # # # #
 # Gates Dupont      #
 # gdupont@umass.edu #
 # # # # # # # # # # # 
@@ -34,7 +35,7 @@ group_by = dplyr::group_by
 select = dplyr::select
 
 # Working directory for r proj
-wd = getwd()
+wd = "~/scrdesign_sims"
 
 
 "DATA FROM oSCR"
