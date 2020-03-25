@@ -35,7 +35,7 @@ group_by = dplyr::group_by
 select = dplyr::select
 
 # Working directory for r proj
-wd = "~/scrdesign_sims"
+wd = "~/scr_design_sims"
 
 
 "DATA FROM oSCR"
