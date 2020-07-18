@@ -1,6 +1,7 @@
-# Gates Dupont      #
-# gdupont@umass.edu #
-# # # # # # # # # # # 
+# Gates Dupont         #
+# gdupont@umass.edu    #
+# Sept. '19 - July '20 #
+# # # # # # # # # # # #
 
 require(oSCR)
 require(dplyr)
@@ -9,7 +10,7 @@ require(raster)
 require(viridis)
 require(stringr)
 require(landscapetools)
-# Resolve namespace conflicts
+
 select = dplyr::select
 
 "RIGHT"
@@ -18,12 +19,39 @@ right = function(text, num_char) {
 }
 
 
-"SIMPLE STATESPACE PLOT"
+"SIMPLE SS PLOT"
 # Plot to check designs
 plot_design = function(SS, TT, design){
   plot(SS, asp=1, col="gray80", cex=0.2)
   points(TT, pch=20, col="orange", cex=2)
   points(design, pch=20, col="blue", cex=2.5)
+}
+
+
+"PLANAR GRADIENT"
+
+# Fixed version of nlm_planargradient
+r.nlm_planargradient = function (ncol, nrow, resolution = 1, direction = NA, rescale = TRUE) 
+{
+  checkmate::assert_count(ncol, positive = TRUE)
+  checkmate::assert_count(nrow, positive = TRUE)
+  checkmate::assert_numeric(direction)
+  checkmate::assert_logical(rescale)
+  if (is.na(direction)) {
+    direction <- stats::runif(1, 0, 360)
+  }
+  eastness <- sin((pi/180) * direction)
+  southness <- cos((pi/180) * direction) * -1
+  col_index <- matrix(0:(ncol - 1), nrow, ncol, byrow = TRUE)
+  row_index <- matrix(0:(nrow - 1), nrow, ncol, byrow = FALSE)
+  gradient_matrix <- (southness * row_index + eastness * col_index)
+  gradient_raster <- raster::raster(gradient_matrix)
+  raster::extent(gradient_raster) <- c(0, ncol(gradient_raster) * 
+                                         resolution, 0, nrow(gradient_raster) * resolution)
+  if (rescale == TRUE) {
+    gradient_raster <- util_rescale(gradient_raster)
+  }
+  return(gradient_raster)
 }
 
 
@@ -169,6 +197,7 @@ calc_srmse = function(estimates, parameter){
 "SIMULATOR"
 
 #----SIMULATOR----
+
 #Create a simulator function
 simulator<- function(traps, ss, N, p0, sigma, K, nsim, it = 1,
                      landscape = NA, d.beta = 3, plot = TRUE, 
@@ -181,11 +210,11 @@ simulator<- function(traps, ss, N, p0, sigma, K, nsim, it = 1,
   }
   
   # Initialize data-collection matrix
-  simout1 <- matrix(NA, nrow=0, ncol=18)  #create empty matrix for output
-  colnames(simout1)<- c("p0","sig","d0", "d.beta", # esimates
+  simout1 <- matrix(NA, nrow=0, ncol=18)  #c reate empty matrix for output
+  colnames(simout1)<- c("p0","sig","d0", "d.beta", # estimates
                         "nind", # number of individuals (length of first dimmension of y)
-                        "nind.c", "nind.r", "r_s", "avg.dets", "avg.r", "avg.nlocs", "avg.nspatcaps", # mannually calculated summary stats
-                        "avg.caps","avg.spatial","mmdm", # summary stats from oSCR (possibly different definitions)
+                        "nind.c", "nind.r", "r_s", "avg.dets", "avg.r", "avg.nlocs", "avg.nspatcaps", # manually calculated summary stats
+                        "avg.caps","avg.spatial","mmdm", # summary stats from oSCR (but see metric definitions)
                         "failures","EN","oSCR_model") # other components
   
   # Initialize while loop starting values
@@ -193,7 +222,7 @@ simulator<- function(traps, ss, N, p0, sigma, K, nsim, it = 1,
   sim_try = 0
   total_its = 0
   
-  # Get nsim simulations with spatial recaps
+  # Get nsim acceptable simulations
   while(sim < (nsim + 1)){
     
     # Update loop
@@ -205,7 +234,7 @@ simulator<- function(traps, ss, N, p0, sigma, K, nsim, it = 1,
     cat(paste0("\n Try ", sim_try + 1, "\n"))
     
     # Adding density surface to statespace
-    statespace = densify(SS = ss, landscape = landscape, d.beta = d.beta, seed = sim) # seed = sim or total_its?
+    statespace = densify(SS = ss, landscape = landscape, d.beta = d.beta, seed = sim)
     
     # Sset seed after internal use of set.seed() in densify()
     seed = total_its
@@ -228,7 +257,7 @@ simulator<- function(traps, ss, N, p0, sigma, K, nsim, it = 1,
     D <- e2dist(s,traps)
     
     # Compute detection probabilities:
-    pmat <- p0*exp(-D*D/(2*sigma*sigma)) #p for all inds-traps p_ij
+    pmat <- p0*exp(-D*D/(2*sigma*sigma)) # p for all inds-traps p_ij
     ntraps <- nrow(traps)
     y <- array(0, dim=c(N, ntraps, K)) # empty 3D array (inds by traps by occ)
     
@@ -242,7 +271,7 @@ simulator<- function(traps, ss, N, p0, sigma, K, nsim, it = 1,
     y.all = y                        # for summary stats
     y <- y[ncap>0,,]                 # reduce the y array to include only captured individuals
     
-    # Some summary information. (printed later with "print(scrFrame)")
+    # Some summary information, that is actually printed for you later with "print(scrFrame)"
     caps.per.ind.trap <- apply(y,c(1,2),sum) #shows # capts for each indv across all traps
     
     # Check for captures
@@ -252,7 +281,7 @@ simulator<- function(traps, ss, N, p0, sigma, K, nsim, it = 1,
     # Check for spatial recaps
     check.sp_recaps = as.matrix((caps.per.ind.trap > 0) + 0) %>%
       rowSums() %>%
-      c(.,-1) %>% # avoid warning messages due to empty lists
+      c(.,-1) %>% # This is just to avoid warning messages due to empty lists
       max %>%
       if(. > 1){return(TRUE)} else {return(FALSE)}
     
@@ -319,7 +348,7 @@ simulator<- function(traps, ss, N, p0, sigma, K, nsim, it = 1,
       avg.nlocs = mean(ntraps.per.capInd)               # avg of the number of unique locations per individual
       avg.nspatcaps = mean(ntraps.per.capInd - 1)       # avg of the number of spatial captures per individual
       
-      # Final summary stats object
+      # Finally summary stats object
       SCR_summary_stats = list(nind.c, nind.r, r_s, avg.dets, avg.r, avg.nlocs, avg.nspatcaps)
       names(SCR_summary_stats) = c("nind.c", "nind.r", "r_s", "avg.dets", "avg.r", "avg.nlocs", "avg.nspatcaps")
       

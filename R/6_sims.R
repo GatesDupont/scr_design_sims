@@ -1,8 +1,8 @@
 "HEY! LOOK! Setup"
 
-ncores = 18
+ncores = 15
 nsim = 300 # This should be 300
-wd = "~/scr_design_sims"
+wd = getwd()
 output.dir = "output"
 it.out.dir = "it_out"
 plots.out.dir = "output/sim_plots"
@@ -22,10 +22,11 @@ if(!dir.exists(plots.out.dir)){
 }
 
 
-# # # # # # # # # # #
-# Gates Dupont      #
-# gdupont@umass.edu #
-# # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Gates Dupont         #
+# gdupont@umass.edu    #
+# Sept. '19 - July '20 #
+# # # # # # # # # # # #
 
 library(oSCR)
 library(dplyr)
@@ -67,6 +68,7 @@ simout = foreach(i=1:length(designs), .packages=c(.packages()), .errorhandling =
                        landscape = names_density[i], d.beta = d.beta_true, wd = getwd(),
                        it.out.dir = it.out.dir, plots.out.dir = plots.out.dir,
                        it = as.character(i), nsim = nsim, plot = TRUE) %>%
+    apply(., 2, as.numeric) %>%
     as.data.frame() %>%
     mutate(geom = names_geom[i]) %>%
     mutate(coverage = names_coverage[i]) %>%

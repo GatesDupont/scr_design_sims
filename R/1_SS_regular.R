@@ -1,15 +1,15 @@
-# Gates Dupont      #
-# gdupont@umass.edu #
-# # # # # # # # # # # 
+# Gates Dupont         #
+# gdupont@umass.edu    #
+# Sept. '19 - July '20 #
+# # # # # # # # # # # #
 
 library(dplyr)
 library(NLMR)
 library(raster)
 library(viridis)
 source("R/0_functions.R")
-# Resolve namespace conflicts
 select = dplyr::select
-wd = "~/scr_design_sims"
+wd = getwd()
 
 #----Primary parameter----
 
